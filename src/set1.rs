@@ -2,6 +2,7 @@ extern crate "rustc-serialize" as rustc_serialize;
 
 use self::rustc_serialize::base64::{ToBase64, STANDARD};
 use self::rustc_serialize::hex::{FromHex, ToHex};
+use std::io::fs::File;
 
 fn chal1(s: &str) -> String {
     s.from_hex().unwrap().to_base64(STANDARD)
@@ -39,6 +40,17 @@ fn chal3(m: &str) -> Vec<(u8, String)> {
     res
 }
 
+fn chal4(filename: &str) -> Vec<(u8, String)> {
+    let mut f = File::open(&Path::new(filename));
+    let tmp = f.read_to_string().unwrap();
+    let v: Vec<&str> = tmp.split('\n').collect();
+    let mut res = Vec::new();
+    for s in v.iter() {
+        res.append(&mut chal3(*s))
+    }
+    res
+}
+
 #[test]
 fn test_chal1() {
     let s = "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d";
@@ -59,6 +71,15 @@ fn test_chal3() {
     let s = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736";
     let expected = "436f6f6b696e67204d432773206c696b65206120706f756e64206f66206261636f6e";
     let l = chal3(s);
+    assert_eq!(l.len(), 1);
+    let (ref k, ref m) = l[0];
+    assert_eq!(*m, expected);
+}
+
+#[test]
+fn test_chal4() {
+    let expected = "4e6f77207468617420746865207061727479206973206a756d70696e670a";
+    let l = chal4("src/4.txt");
     assert_eq!(l.len(), 1);
     let (ref k, ref m) = l[0];
     assert_eq!(*m, expected);
