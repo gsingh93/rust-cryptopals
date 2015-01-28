@@ -51,6 +51,14 @@ fn chal4(filename: &str) -> Vec<(u8, String)> {
     res
 }
 
+fn chal5(k: &str, m: &str) -> String {
+    let mut res = String::new();
+    for (i, j) in k.as_bytes().iter().cycle().zip(m.as_bytes().iter()) {
+        res.push((i ^ j) as char);
+    }
+    res.as_bytes().to_hex()
+}
+
 #[test]
 fn test_chal1() {
     let s = "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d";
@@ -83,4 +91,13 @@ fn test_chal4() {
     assert_eq!(l.len(), 1);
     let (ref k, ref m) = l[0];
     assert_eq!(*m, expected);
+}
+
+#[test]
+fn test_chal5() {
+    let k = "ICE";
+    let s = "Burning 'em, if you ain't quick and nimble\n\
+             I go crazy when I hear a cymbal";
+    let expected = "0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272a282b2f20430a652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f";
+    assert_eq!(chal5(k, s), expected);
 }
