@@ -3,3 +3,6 @@
 name = "rust-cryptopals"
 version = "0.0.1"
 authors = ["Gulshan Singh <gulshan@umich.edu>"]
+
+[dependencies]
+rustc-serialize = "0.2.9"
